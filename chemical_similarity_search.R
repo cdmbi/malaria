@@ -9,7 +9,7 @@ query_data <- read.csv("GAMO_PFdata_200115.csv", stringsAsFactors = FALSE)
 query_smiles <- query_data$smiles[1:13403]
 target_smiles <- target_data$smiles[110001:120000]
 
-sample <- fread("results_10000.csv")
+#sample <- fread("results_10000.csv")
 
 ##calculating all 
 options(java.parameters = "-Xmx31000m")
@@ -38,7 +38,7 @@ query.fp <- get.fingerprint(query_mols, type = "circular")
 
 #my_results <- data.frame()
 setwd("~/Documents/malaria")
-target_data <- readRDS("target_fps_30000.Rds")
+target_data <- readRDS("target_fps_50000.Rds")
 query_data <- readRDS("query_fp_GAMPO.Rds")
 
 library(parallel)
@@ -67,4 +67,4 @@ my_results <- foreach(i = 1:13403, .packages = 'rcdk') %dopar% {
 
 my_results_df <- as.data.frame(do.call("rbind", my_results))
 
-write.csv(my_results_df, file = "results_300000.csv")
+write.csv(my_results_df, file = "results_50000.csv")
