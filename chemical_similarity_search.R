@@ -7,7 +7,7 @@ library(data.table)
 target_data <- fread("ChEMBL_21_MWTlt900_standardized.csv")
 query_data <- read.csv("GAMO_PFdata_200115.csv", stringsAsFactors = FALSE)
 query_smiles <- query_data$smiles[1:13403]
-target_smiles <- target_data$smiles[740001:750000]
+target_smiles <- target_data$smiles[820001:830000]
 
 #sample <- fread("results_10000.csv")
 
@@ -31,7 +31,7 @@ target.mols <- parse.smiles(query_smiles)
 #                        get.fingerprint, type = "circular")
 target.fps <- lapply(target.mols, get.fingerprint, type = "circular")
 
-saveRDS(target.fps, "target_fps_750000.Rds")
+saveRDS(target.fps, "target_fps_830000.Rds")
 
 
 
