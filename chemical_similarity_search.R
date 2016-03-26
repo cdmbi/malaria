@@ -7,9 +7,11 @@ library(data.table)
 target_data <- fread("ChEMBL_21_MWTlt900_standardized.csv")
 query_data <- read.csv("GAMO_PFdata_200115.csv", stringsAsFactors = FALSE)
 query_smiles <- query_data$smiles[1:13403]
-target_smiles <- target_data$smiles[550001:560000]
+target_smiles <- target_data$smiles[740001:750000]
 
 #sample <- fread("results_10000.csv")
+
+
 #df <- data.frame(sample)
 #smiles <- df$smiles
 #rownames(df) <- smiles
@@ -20,7 +22,7 @@ target_smiles <- target_data$smiles[550001:560000]
 
 ##calculating all 
 options(java.parameters = "-Xmx31000m")
-target.mols <- parse.smiles(target_smiles)
+target.mols <- parse.smiles(query_smiles)
 #library(parallel)
 #cl <- makeCluster(24)
 #clusterExport(cl = cl, varlist = "target.mols")
@@ -29,15 +31,24 @@ target.mols <- parse.smiles(target_smiles)
 #                        get.fingerprint, type = "circular")
 target.fps <- lapply(target.mols, get.fingerprint, type = "circular")
 
-saveRDS(target.fps, "target_fps_560000.Rds")
+saveRDS(target.fps, "target_fps_750000.Rds")
 
 
 
 query_mols <- parse.smiles(query_smiles)[[1]]
 target.mols <- parse.smiles(target_smiles)
 
-query.fp <- get.fingerprint(query_mols, type = "circular")
-#target.fps <- lapply(target.mols, get.fingerprint, type = "circular")
+query.fp <- get.fingerprint(query_mols, type = "circular", depth = 3)
+library(rbenchmark)
+benchmark(
+target.fps_1 <- lapply(target.mols, get.fingerprint, 
+                       type = "circular", depth = 3, size = 1024),
+target.fps_2 <- lapply(target.mols, get.fingerprint,
+                       type = "circular", depth = 6, size = 1024),
+order = "elapsed", replications = 1)
+
+
+
 #tanimoto_similarity <- unlist(lapply(target.fps, distance, fp2 = query.fp,
 #                                     method = 'tanimoto'))
 #results <- as.data.frame(tanimoto_similarity)
@@ -45,7 +56,7 @@ query.fp <- get.fingerprint(query_mols, type = "circular")
 
 #my_results <- data.frame()
 setwd("~/Documents/malaria")
-target_data <- readRDS("target_fps_140000.Rds")
+target_data <- readRDS("target_fps_160000.Rds")
 query_data <- readRDS("query_fp_GAMPO.Rds")
 
 library(parallel)
@@ -74,5 +85,5 @@ my_results <- foreach(i = 1:13403, .packages = 'rcdk') %dopar% {
 
 my_results_df <- as.data.frame(do.call("rbind", my_results))
 
-write.csv(my_results_df, file = "results_140000.csv", 
+write.csv(my_results_df, file = "results_160000.csv", 
           row.names = FALSE)
