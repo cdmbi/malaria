@@ -7,7 +7,7 @@ library(data.table)
 target_data <- fread("ChEMBL_21_MWTlt900_standardized.csv")
 query_data <- read.csv("GAMO_PFdata_200115.csv", stringsAsFactors = FALSE)
 query_smiles <- query_data$smiles[1:13403]
-target_smiles <- target_data$smiles[890001:900000]
+target_smiles <- target_data$smiles[1030001:1048574]
 
 #sample <- fread("results_10000.csv")
 
@@ -31,7 +31,7 @@ target.mols <- parse.smiles(query_smiles)
 #                        get.fingerprint, type = "circular")
 target.fps <- lapply(target.mols, get.fingerprint, type = "circular")
 
-saveRDS(target.fps, "target_fps_900000.Rds")
+saveRDS(target.fps, "target_fps_1048574.Rds")
 
 
 
@@ -56,12 +56,12 @@ order = "elapsed", replications = 1)
 
 #my_results <- data.frame()
 setwd("~/Documents/malaria")
-target_data <- readRDS("target_fps_180000.Rds")
+target_data <- readRDS("target_fps_220000.Rds")
 query_data <- readRDS("query_fp_GAMPO.Rds")
 
 library(parallel)
 library(doSNOW)
-cl <- makeCluster(24)
+cl <- makeCluster(23)
 #clusterExport(cl, "target.fps")
 registerDoSNOW(cl)
 my_results <- list(1:13403)
@@ -85,5 +85,5 @@ my_results <- foreach(i = 1:13403, .packages = 'rcdk') %dopar% {
 
 my_results_df <- as.data.frame(do.call("rbind", my_results))
 
-write.csv(my_results_df, file = "results_180000.csv", 
+write.csv(my_results_df, file = "results_220000.csv", 
           row.names = FALSE)
