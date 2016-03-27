@@ -7,7 +7,7 @@ library(data.table)
 target_data <- fread("ChEMBL_21_MWTlt900_standardized.csv")
 query_data <- read.csv("GAMO_PFdata_200115.csv", stringsAsFactors = FALSE)
 query_smiles <- query_data$smiles[1:13403]
-target_smiles <- target_data$smiles[820001:830000]
+target_smiles <- target_data$smiles[890001:900000]
 
 #sample <- fread("results_10000.csv")
 
@@ -31,7 +31,7 @@ target.mols <- parse.smiles(query_smiles)
 #                        get.fingerprint, type = "circular")
 target.fps <- lapply(target.mols, get.fingerprint, type = "circular")
 
-saveRDS(target.fps, "target_fps_830000.Rds")
+saveRDS(target.fps, "target_fps_900000.Rds")
 
 
 
@@ -56,7 +56,7 @@ order = "elapsed", replications = 1)
 
 #my_results <- data.frame()
 setwd("~/Documents/malaria")
-target_data <- readRDS("target_fps_160000.Rds")
+target_data <- readRDS("target_fps_180000.Rds")
 query_data <- readRDS("query_fp_GAMPO.Rds")
 
 library(parallel)
@@ -85,5 +85,5 @@ my_results <- foreach(i = 1:13403, .packages = 'rcdk') %dopar% {
 
 my_results_df <- as.data.frame(do.call("rbind", my_results))
 
-write.csv(my_results_df, file = "results_160000.csv", 
+write.csv(my_results_df, file = "results_180000.csv", 
           row.names = FALSE)
