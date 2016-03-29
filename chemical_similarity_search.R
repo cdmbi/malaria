@@ -56,7 +56,7 @@ order = "elapsed", replications = 1)
 
 #my_results <- data.frame()
 setwd("~/Documents/malaria")
-target_data <- readRDS("target_fps_240000.Rds")
+target_data <- readRDS("target_fps_280000.Rds")
 query_data <- readRDS("query_fp_GAMPO.Rds")
 
 library(parallel)
@@ -85,5 +85,5 @@ my_results <- foreach(i = 1:13403, .packages = 'rcdk') %dopar% {
 
 my_results_df <- as.data.frame(do.call("rbind", my_results))
 
-write.csv(my_results_df, file = "results_240000.csv", 
+write.csv(my_results_df, file = "results_280000.csv", 
           row.names = FALSE)
